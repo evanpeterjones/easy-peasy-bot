@@ -86,7 +86,7 @@ messages = {
     'hi' : 'No time for pleasantries! get hacking!!',
     'next' : "No Events Yet! Come back later", //getsched()
     'meme': "I'm not *that* kind of bot!", //randomMeme()
-    'foodcam': "not yet", //getimage()
+    'foodcam': "not yet", //getimage() this needs to hide some text in the jpeg which can be sent back and is the key to the riddle!!!!
     'assist' : "We're sending someone your way ASAP!",
     'riddle': "There's something I'm hiding, it's seems I forgot. find it for me, and I'll thank you a lot"
 }
