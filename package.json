@@ -1,7 +1,7 @@
 {
   "name": "app-hack-bot",
   "version": "1.0.0",
-  "description": "Schedule Bot for Apphack.",
+  "description": "Bot for Apphack.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -12,10 +12,10 @@
     "url": "git+https://github.com/DEGoodmanWilson/easy-peasy-bot-app.git"
   },
   "keywords": [
-    "slack",
+    "hack",
     "bot"
   ],
-  "author": "D.E. Goodman-Wilson",
+  "author": "Evan Jones",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/DEGoodmanWilson/easy-peasy-bot-app/issues"
