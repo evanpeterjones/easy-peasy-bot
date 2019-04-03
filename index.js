@@ -86,7 +86,14 @@ var messages = {
     'hi' : 'No time for pleasantries! get hacking!!',
     'next' : "No Events Yet! Come back later", //getsched()
     'meme': "I'm not *that* kind of bot!", //randomMeme()
-    'foodcam': "not yet",//currimage //getimage() this needs to hide some text in the jpeg which can be sent back and is the key to the riddle!!!!
+    'foodcam': {
+	"attachments" : [
+	    "fallback" : "oops",
+	    "text" : "I couldn't find the food", 
+	    "image_url" : "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/1280px-Good_Food_Display_-_NCI_Visuals_Online.jpg"
+	    //this url might have to be a file on my student machine server directory
+	]
+    },
     'assist' : "We're sending someone your way ASAP!",
     'wifi' : 'There is no password for App-Guest'
     'riddle': "There's something I'm hiding, it's seems I forgot. find it for me, and I'll thank you a lot"
@@ -98,7 +105,7 @@ controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!")
 });
 
-controller.hears("[*]", 'direct_message', function (bot, message) {
+controller.on('direct_message,direct_mention', function (bot, message) {
     bot.reply(message, messages[message]);
 });
 
