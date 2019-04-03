@@ -82,18 +82,22 @@ controller.on('rtm_close', function (bot) {
 // BEGIN EDITING HERE!
 
 messages = {
-    'help' : "here's how to talk to me. Say... \nnext for next scheduled event\nhello for a greeting \nfood for info about upcoming meals or snacking locations",
-    'hello' : 'Hi!',
-    'next' : "No Events Yet!" //getsched()
+    'help' : "Try some of these... \n\n`asist` [`programming language`] [`room number`]: we'll send a director to help if I'm not good enough :,( \n`next` : find out about upcoming workshops \n`food` : info about upcoming meals and snacking options \n`foodcam` : *see* the snack table!\n`riddle` : ? ;)",
+    'hi' : 'No time for pleasantries! get hacking!!',
+    'next' : "No Events Yet! Come back later", //getsched()
+    'meme': "I'm not *that* kind of bot!", //randomMeme()
+    'foodcam': "not yet", //getimage()
+    'assist' : "We're sending someone your way ASAP!",
+    'riddle': "There's something I'm hiding, it's seems I forgot. find it for me, and I'll thank you a lot"
 }
 
-m = ['help', 'hello', 'next']
+m = ['help', 'hi', 'next']
 
 controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!")
 });
 
-controller.hears(m, 'direct_message', function (bot, message) {
+controller.hears("[*]", 'direct_message', function (bot, message) {
     bot.reply(message, messages[message]);
 });
 
