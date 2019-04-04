@@ -81,34 +81,79 @@ controller.on('rtm_close', function (bot) {
  */
 // BEGIN EDITING HERE!
 
+var sched = [['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am','11am','12pm','1pm','2m','3pm','4pm','5pm','6pm','7pm','8pm','9pm','10pm','11pm'],
+	     ['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am','11am','12pm','1pm','2m','3pm','4pm','5pm','6pm','7pm','8pm','9pm','10pm','11pm']];
+
 var messages = {
-    'help' : "Try some of these... \n\n`assist` `lang=`[programming language] `room=`[room number or location]: we'll send a director to help if I'm not good enough :,( \n`next` : find out about upcoming workshops \n`food` : info about upcoming meals and snacking options \n`foodcam` : *see* the snack table!\n `wifi` : info on setting up on campus wifi \n`riddle` : ? ;)",
+    'help' : "Try some of these... \n\n`next`\tupcoming events \n`food`\tinfo about meals and snacking options \n`riddle`\t?",
     'hi' : 'No time for pleasantries! get hacking!!',
     'next' : "No Events Yet! Come back later", //getsched()
     'meme': "I'm not *that* kind of bot!", //randomMeme()
-    'foodcam': {
-	"attachments" : [
-	    "fallback" : "oops",
-	    "text" : "I couldn't find the food", 
-	    "image_url" : "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/1280px-Good_Food_Display_-_NCI_Visuals_Online.jpg"
-	    //this url might have to be a file on my student machine server directory
-	]
-    },
     'assist' : "We're sending someone your way ASAP!",
-    'wifi' : 'There is no password for App-Guest'
-    'riddle': "There's something I'm hiding, it's seems I forgot. find it for me, and I'll thank you a lot"
+    'riddle' : "There's something I'm hiding, it's seems I forgot. find it for me, and I'll thank you a lot"
 }
-
-var m = ['help', 'hi', 'next', 'meme', 'foodcam', 'assist', 'wifi', 'riddle']
 
 controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!")
 });
 
-controller.on('direct_message,direct_mention', function (bot, message) {
-    bot.reply(message, messages[message]);
+controller.hears(['help','-h'], 'direct_message', function (bot, message) {
+    bot.reply(message, messages['help']);
 });
 
+controller.hears(['hi', 'hello', 'sup'], 'direct_message', function (bot, message) {
+    bot.reply(message, messages['hi']);
+});
+
+controller.hears('next', 'direct_message', function (bot, message) {
+    var date = new Date();
+    var day = date.getDay();
+    var hour = date.getHours();
+    console.log(date+"\n"+day+"\n"+hour);
+    var sc = sched[Number(day)-4][Number(hour)];
+    console.log(sc);
+    bot.reply(message, sc);
+});
+
+controller.hears('meme', 'direct_message', function (bot, message) {
+    bot.reply(message, messages['meme']);
+});
+
+controller.hears('riddle', 'direct_message', function (bot, message) {
+    bot.reply(message, messages['riddle']);
+});
+
+controller.hears('wifi', 'direct_message', function (bot, message) {
+    bot.reply(message, messages['wifi']);
+});
+
+controller.hears('food', 'direct_message', function (bot, message) {
+    console.log('sending image');
+    bot.reply(message, {
+	"attachments": [
+            {
+		"fallback": "Required plain-text summary of the attachment.",
+		"text": "Optional text that appears within the attachment",
+		"image_url": "http://my-website.com/path/to/image.jpg",
+		"thumb_url": "http://example.com/path/to/thumb.png"
+            }
+	]
+    });
+    console.log('image sent');    
+});
+
+/*
+controller.on('direct_message,direct_mention', function (bot, message) {
+    console.log(message.text);
+    for (var i = 0; i < m.length; i++)
+    {
+	if (message.text.includes(m[i]))
+	{
+	    bot.reply(message, messages[m[i]]);
+	}
+    }
+});
+*/
 
 /**
  * AN example of what could be:
