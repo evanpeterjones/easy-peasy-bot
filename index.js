@@ -80,6 +80,14 @@ controller.on('rtm_close', function (bot) {
  * Core bot logic goes here!
  */
 // BEGIN EDITING HERE!
+// this is our cron
+var scheduler = require('node-schedule');
+var j = schedule.scheduleJob({ start: startTime, rule: '* */45 * * * *' }, function(){
+    bot.say({
+	text : next(),
+	channel : '#general' //need to have a way to get the general channel
+    });	
+});
 
 var sched = [['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am', '11am: No Event Scheduled',
 	      '12pm: No Event Scheduled',
@@ -93,9 +101,9 @@ var sched = [['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am
 	      '`8pm Workshops` \nRoom 309: "The Joy of Concurrency in Go" w/Andrew Thorp\n\nRoom 311: "How Fast Can You Add a Billion Numbers" w/Gurney Buchanan',
 	      '`9pm Workshops` \nRoom 309: "Guessing Your Future and the soft Skills That Will Make You Successful" w/Scott Bradley\n\nRoom 310: "Turning User Stories into Products" w/Keith Pahl, Patrick Savago (_TMetrics_)\n\nRoom 311: "How Fast Can You Add a Billion Numbers" w/Gurney Buchanan',
 	      '`10pm Workshops` \nRoom 309: "Kubernetes 101" w/Mike Wilson (_Canonical_)\n\nRoom 310: "Structured Experimentation - Practical Lessons from Winning the Zillow Prize" w/Jordan Meyer (_Rittman Mead_)',
-	      "`11pm: \n`next event`\nRoomt 325: DnD 'n snacks!!!!"],
+	      '`11pm Workshops` \nRoom 309: "Build and Deploy your First Website" w/Evan Jones'],
 
-	     ["12am not-work-Shop \nRoom 325: take a break with snacks 'n DnD!",
+	     ["12am not-work-Shop \nRoom 318: \nSteve Jobs look-alike Contest!! \nOr take a break with snacks 'n DnD!",
 	      '1am: Nothing scheduled, keep hackin',
 	      '2am: Nothing scheduled, keep hackin',
 	      '3am: Nothing scheduled, keep hackin',
@@ -108,9 +116,9 @@ var sched = [['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am
 	      '10am: 2 hours to go!! keep hackin! (_Lunch by Jersey Mikes at 11am_)',
 	      '11am: Come get Lunch from Jersey Mikes!\n\n...*tick*\n...\n...*tock*\n...\n...*tick*\n...\n...*tock*\nSubmit Your Code before 12pm: _https://www.google.com_', // needs real link
 	      '12pm: All code should be submitted to devpost',
-	      '1pm: ','2m','3pm','4pm','5pm','6pm','7pm','8pm','9pm','10pm','11pm']];
+	      '1pm: ','2pm','3pm','4pm','5pm','6pm','7pm','8pm','9pm','10pm','11pm']];
 
-var no = function() {
+var now = function() {
     var date = new Date();
     var day = date.getDay();
     var hour = date.getHours();
@@ -120,7 +128,8 @@ var no = function() {
     return sc;
 };
 
-var ne = function() {
+var next = function() {
+    //this doesn't work and breaks at midnight
     var date = new Date();
     var day = date.getDay();
     var hour = date.getHours();
@@ -129,8 +138,8 @@ var ne = function() {
 };
 
 var messages = {
-    'next'   : [ne(), 'List next event on the schedule'],
-    'now'    : ["Get going! You're missing out!\n\n"+no(),'List current events'],
+    'next'   : [ next(), 'List next event on the schedule'],
+    'now'    : ["Get going! You're missing out!\n\n"+now(),'List current events'],
 //    'food'   : ['upcoming meals and snack info', getFood()],    
     'riddle' : ["There's something I'm hiding, it seems I forgot. find it for me, and I'll thank you a lot", '?'],
 
@@ -144,11 +153,13 @@ var messages = {
 
 var m = Object.keys(messages);
 
+var push_cmd = 'curl -F file=@dramacat.gif -F "initial_comment=Shakes the cat" -F channels=C024BE91L,D032AC32T -H "Authorization: Bearer xoxa-xxxxxxxxx-xxxx" https://slack.com/api/files.upload';
+
 controller.hears(['help', '-h'], 'direct_message,direct_mention,mention', function(bot, message) {
-    // write function that dynamically processes messages and adds with formatting if second index not null!
     var msg = 'Try some of these...\n\n';
     for (var i = 0; i < m.length; i++)
     {
+	// Only select the messages that have intended use! (are objects)
 	if (typeof messages[m[i]] === 'object') {
 	    msg += '`'+m[i]+'`\t'+messages[m[i]][1];
 	} msg+='\n';
@@ -159,14 +170,14 @@ controller.hears(['help', '-h'], 'direct_message,direct_mention,mention', functi
 controller.hears('01010000', 'direct_message', function(bot, message) {
     bot.say({
 	text : "WINNER INFO:"+message,
-	channel : 'UDNTUEHUH' // send me a text when someone wins!!
+	channel : 'UDNTUEHUH' // send me a message when someone wins!!
     });
 });
 
 controller.hears('assist', 'direct_message, direct_mention', function(bot, message) {
     bot.say({
-	text : message,
-	channel : 'UDNTUEHUH' // send me a text when someone needs help
+	text : message.text,
+	channel : 'UDNTUEHUH' // send me a message when someone needs help
     });
 });
 
