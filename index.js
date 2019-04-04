@@ -131,16 +131,36 @@ var ne = function() {
 var messages = {
     'help' : "Try some of these... \n\n`now`\tList current events\n`next`\tList next event on the schedule!\n`food`\tinfo about next meals and snacking options \n`riddle`\t?",
     'next' : 	      '11am: \n...*tick*\n...\n...*tock*\n...\n...*tick*\n...\n...*tock*\nSubmit Your Code before 12pm: _https://www.google.com_', // needs real link
-    'now' : "Get going! You're missing out!\n\n"+no(), //Event currently happening
-    'meme': "I'm not *that* kind of bot!", //randomMeme()
-    'assist' : "we're sending someone your way ASAP!",
-    'riddle' : "There's something I'm hiding, it's seems I forgot. find it for me, and I'll thank you a lot",
+    'now'  : "Get going! You're missing out!\n\n"+no(), //Event currently happening
+    'meme' : "I'm not *that* kind of bot!",
+    'stop' : "I can't be tamed",
+    'bork' : "that's not useful", 
+    'riddle' : "There's something I'm hiding, it seems I forgot. find it for me, and I'll thank you a lot",
     'hi' : 'No time for pleasantries! get hacking!!'
 };
 
-var m = [ 'help', 'next', 'meme', 'assist', 'riddle', 'hi', 'now' ];
+var m = Object.keys(messages);
 
-controller.on('direct_message,direct_mention', function (bot, message) {
+controller.hears('help', 'direct_message,direct_mention,mention', function(bot, message) {
+    // write function that dynamically processes messages and adds with formatting if second index not null!
+    
+});
+
+controller.hears('01010000', 'direct_message', function(bot, message) {
+    bot.say({
+	text : "WINNER INFO:"+message,
+	channel : 'UDNTUEHUH' // send me a text when someone wins!!
+    });
+});
+
+controller.hears('assist', 'direct_message, direct_mention', function(bot, message) {
+    bot.say({
+	text : message,
+	channel : 'UDNTUEHUH' // send me a text when someone needs help
+    });
+});
+
+controller.on('direct_message,direct_mention,mention', function (bot, message) {
     console.log(message); // print json on server
     for (var i = 0; i < m.length; i++)
     {
@@ -152,10 +172,10 @@ controller.on('direct_message,direct_mention', function (bot, message) {
 });
 
 controller.on('bot_channel_join', function (bot, message) {
-    bot.reply(message, "Thanks for the warm welcome!")
+    bot.reply(message, "Thanks for the warm welcome!");
 });
 
-/**
+	      /**
 controller.hears('test', 'direct_message', function (bot, message) {
     bot.reply(message, '`9pm Workshops` \nRoom 309: "Guessing Your Future and the soft Skills the Will Make You Successful" w/Scott Bradley\n\nRoom 310: "Turning User Stories into Products" w/Keith Pahl, Patrick Savago (TMetrics)\n\nRoom 311: "How Fast Can You Add a Billion Numbers" w/Gurney Buchanan');
 });
