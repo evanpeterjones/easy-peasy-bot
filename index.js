@@ -81,20 +81,87 @@ controller.on('rtm_close', function (bot) {
  */
 // BEGIN EDITING HERE!
 
-var sched = [['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am','11am','12pm','1pm','2m','3pm','4pm','5pm','6pm','7pm','8pm','9pm','10pm','11pm'],
-	     ['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am','11am','12pm','1pm','2m','3pm','4pm','5pm','6pm','7pm','8pm','9pm','10pm','11pm']];
+var sched = [['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am', '11am: No Event Scheduled',
+	      '12pm: No Event Scheduled',
+	      '1pm: No Event Scheduled',
+	      '2pm: No Event Scheduled',
+	      '3pm: No Event Scheduled',
+	      '4pm: No Event Scheduled',
+	      "5pm: Visit the signin table and make sure you're registered!",
+	      '6pm: Kickoff is starting!',
+	      "7pm: Dinner! Woodlands BBQ, get it while it's hot, y'all",
+	      '`8pm Workshops` \nRoom 309: "The Joy of Concurrency in Go" w/Andrew Thorp\n\nRoom 311: "How Fast Can You Add a Billion Numbers" w/Gurney Buchanan',
+	      '`9pm Workshops` \nRoom 309: "Guessing Your Future and the soft Skills That Will Make You Successful" w/Scott Bradley\n\nRoom 310: "Turning User Stories into Products" w/Keith Pahl, Patrick Savago (_TMetrics_)\n\nRoom 311: "How Fast Can You Add a Billion Numbers" w/Gurney Buchanan',
+	      '`10pm Workshops` \nRoom 309: "Kubernetes 101" w/Mike Wilson (_Canonical_)\n\nRoom 310: "Structured Experimentation - Practical Lessons from Winning the Zillow Prize" w/Jordan Meyer (_Rittman Mead_)',
+	      "`11pm: \n`next event`\nRoomt 325: DnD 'n snacks!!!!"],
+
+	     ["12am not-work-Shop \nRoom 325: take a break with snacks 'n DnD!",
+	      '1am: Nothing scheduled, keep hackin',
+	      '2am: Nothing scheduled, keep hackin',
+	      '3am: Nothing scheduled, keep hackin',
+	      '4am: Nothing scheduled, keep hackin',
+	      '5am: Nothing scheduled, keep hackin',
+	      '6am: Nothing scheduled, keep hackin (_breakfast soon!_)',
+	      '7am: Breakfast!! _Cereal, bagels, fruit & more!_',
+	      '8am: Nothing scheduled \n4 hours to go! keep hackin!',
+	      '9am: 3 hours to go!! keep hackin!',
+	      '10am: 2 hours to go!! keep hackin! (_Lunch by Jersey Mikes at 11am_)',
+	      '11am: Come get Lunch from Jersey Mikes!\n\n...*tick*\n...\n...*tock*\n...\n...*tick*\n...\n...*tock*\nSubmit Your Code before 12pm: _https://www.google.com_', // needs real link
+	      '12pm: All code should be submitted to devpost',
+	      '1pm: ','2m','3pm','4pm','5pm','6pm','7pm','8pm','9pm','10pm','11pm']];
+
+var no = function() {
+    var date = new Date();
+    var day = date.getDay();
+    var hour = date.getHours();
+    console.log(date+"\n"+day+" : "+hour);
+    var sc = sched[Number(day)-4][Number(hour)]; // change this to 5!!!! OMG
+    console.log(sc);
+    return sc;
+};
+
+var ne = function() {
+    var date = new Date();
+    var day = date.getDay();
+    var hour = date.getHours();
+    console.log(date+"\n"+day+" : "+hour);
+    var sc = sched[Number(day)-4][Number(hour)+1]; // also change this to 5 you piece of shit!!!! // also this is broken, how the fuck?
+};
 
 var messages = {
-    'help' : "Try some of these... \n\n`next`\tupcoming events \n`food`\tinfo about meals and snacking options \n`riddle`\t?",
-    'hi' : 'No time for pleasantries! get hacking!!',
-    'next' : "No Events Yet! Come back later", //getsched()
+    'help' : "Try some of these... \n\n`now`\tList current events\n`next`\tList next event on the schedule!\n`food`\tinfo about next meals and snacking options \n`riddle`\t?",
+    'next' : 	      '11am: \n...*tick*\n...\n...*tock*\n...\n...*tick*\n...\n...*tock*\nSubmit Your Code before 12pm: _https://www.google.com_', // needs real link
+    'now' : "Get going! You're missing out!\n\n"+no(), //Event currently happening
     'meme': "I'm not *that* kind of bot!", //randomMeme()
-    'assist' : "We're sending someone your way ASAP!",
-    'riddle' : "There's something I'm hiding, it's seems I forgot. find it for me, and I'll thank you a lot"
-}
+    'assist' : "we're sending someone your way ASAP!",
+    'riddle' : "There's something I'm hiding, it's seems I forgot. find it for me, and I'll thank you a lot",
+    'hi' : 'No time for pleasantries! get hacking!!'
+};
+
+var m = [ 'help', 'next', 'meme', 'assist', 'riddle', 'hi', 'now' ];
+
+controller.on('direct_message,direct_mention', function (bot, message) {
+    console.log(message); // print json on server
+    for (var i = 0; i < m.length; i++)
+    {
+	if (message.text.toLowerCase().includes(m[i]))
+	{
+	    bot.reply(message, messages[m[i]]);
+	}
+    }
+});
 
 controller.on('bot_channel_join', function (bot, message) {
-    bot.reply(message, "I'm here!")
+    bot.reply(message, "Thanks for the warm welcome!")
+});
+
+/**
+controller.hears('test', 'direct_message', function (bot, message) {
+    bot.reply(message, '`9pm Workshops` \nRoom 309: "Guessing Your Future and the soft Skills the Will Make You Successful" w/Scott Bradley\n\nRoom 310: "Turning User Stories into Products" w/Keith Pahl, Patrick Savago (TMetrics)\n\nRoom 311: "How Fast Can You Add a Billion Numbers" w/Gurney Buchanan');
+});
+
+controller.hears('assist', 'direct_message', function(bot, message) {
+    
 });
 
 controller.hears(['help','-h'], 'direct_message', function (bot, message) {
@@ -103,16 +170,6 @@ controller.hears(['help','-h'], 'direct_message', function (bot, message) {
 
 controller.hears(['hi', 'hello', 'sup'], 'direct_message', function (bot, message) {
     bot.reply(message, messages['hi']);
-});
-
-controller.hears('next', 'direct_message', function (bot, message) {
-    var date = new Date();
-    var day = date.getDay();
-    var hour = date.getHours();
-    console.log(date+"\n"+day+"\n"+hour);
-    var sc = sched[Number(day)-4][Number(hour)];
-    console.log(sc);
-    bot.reply(message, sc);
 });
 
 controller.hears('meme', 'direct_message', function (bot, message) {
@@ -142,17 +199,6 @@ controller.hears('food', 'direct_message', function (bot, message) {
     console.log('image sent');    
 });
 
-/*
-controller.on('direct_message,direct_mention', function (bot, message) {
-    console.log(message.text);
-    for (var i = 0; i < m.length; i++)
-    {
-	if (message.text.includes(m[i]))
-	{
-	    bot.reply(message, messages[m[i]]);
-	}
-    }
-});
 */
 
 /**
