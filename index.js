@@ -129,21 +129,31 @@ var ne = function() {
 };
 
 var messages = {
-    'help' : "Try some of these... \n\n`now`\tList current events\n`next`\tList next event on the schedule!\n`food`\tinfo about next meals and snacking options \n`riddle`\t?",
-    'next' : 	      '11am: \n...*tick*\n...\n...*tock*\n...\n...*tick*\n...\n...*tock*\nSubmit Your Code before 12pm: _https://www.google.com_', // needs real link
-    'now'  : "Get going! You're missing out!\n\n"+no(), //Event currently happening
+    'next'   : [ne(), 'List next event on the schedule'],
+    'now'    : ["Get going! You're missing out!\n\n"+no(),'List current events'],
+//    'food'   : ['upcoming meals and snack info', getFood()],    
+    'riddle' : ["There's something I'm hiding, it seems I forgot. find it for me, and I'll thank you a lot", '?'],
+
+    // background commands
+    'hi' : 'No time for pleasantries! get hacking!!',
     'meme' : "I'm not *that* kind of bot!",
+    'good bot': 'thanks!',
     'stop' : "I can't be tamed",
-    'bork' : "that's not useful", 
-    'riddle' : "There's something I'm hiding, it seems I forgot. find it for me, and I'll thank you a lot",
-    'hi' : 'No time for pleasantries! get hacking!!'
+    'bork' : "that's not useful"
 };
 
 var m = Object.keys(messages);
 
-controller.hears('help', 'direct_message,direct_mention,mention', function(bot, message) {
+controller.hears(['help', '-h'], 'direct_message,direct_mention,mention', function(bot, message) {
     // write function that dynamically processes messages and adds with formatting if second index not null!
-    
+    var msg = 'Try some of these...\n\n';
+    for (var i = 0; i < m.length; i++)
+    {
+	if (typeof messages[m[i]] === 'object') {
+	    msg += '`'+m[i]+'`\t'+messages[m[i]][1];
+	} msg+='\n';
+    }
+    bot.reply(message, msg);
 });
 
 controller.hears('01010000', 'direct_message', function(bot, message) {
@@ -166,7 +176,10 @@ controller.on('direct_message,direct_mention,mention', function (bot, message) {
     {
 	if (message.text.toLowerCase().includes(m[i]))
 	{
-	    bot.reply(message, messages[m[i]]);
+	    if (typeof messages[m[i]] === 'object')
+	    {
+		bot.reply(message, messages[m[i]][0]);
+	    } else {   bot.reply(message, messages[m[i]]); }
 	}
     }
 });
