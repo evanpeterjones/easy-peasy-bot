@@ -125,7 +125,7 @@ var now = function() {
 	else { sc+='-'; }
     }
     sc+="\n";
-    sc += sched[Number(day)-4][Number(hour)]; // change this to 5!!!! OMG
+    sc += sched[Number(day)-5][Number(hour)]; 
     return sc;
 };
 
@@ -142,7 +142,7 @@ var next = function() {
     }
     sc+="\n";    
     var h = (Number(hour)+1);
-    var d = Number(day)-4; //need this to be a 5
+    var d = Number(day)-5; 
     if (h >= 24) { h=0; d+=1; }
     sc += sched[d][h];
     return sc;
@@ -165,11 +165,11 @@ var messages = {
     '-next'   : [ next(), 'List next event on the schedule'],
     '-now'    : [ "Get going! You're missing out!\n\n"+now(),'List current events'],
     '-food'   : [ getFood(), 'upcoming meals and snack info'],
-    '-assist' : [ '', "Include room# and programming language and we'll send someone to help you out" ],
+    '-assist' : [ '', "Include room# and the language you're using and we'll try and send someone to help you out" ],
     '-riddle' : [ "There's something I'm hiding, it seems I forgot. find it for me, and I'll thank you a lot", '?'],    
 
     // background commands
-    'hello world' : 'omg, I can do that too!',
+    'hello world' : 'omg, get on my level!',
     'hi' : 'No time for pleasantries! get hacking!!',
     'meme' : "I'm not *that* kind of bot!",
     'good bot': 'thanks!',
