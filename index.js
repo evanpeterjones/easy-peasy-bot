@@ -92,11 +92,11 @@ var sched = [['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am
 	      '4pm: No Event Scheduled',
 	      "5pm: Visit the signin table and make sure you're registered!",
 	      '6pm: Kickoff is starting!',
-	      "7pm: Dinner! Woodlands BBQ, get it while it's hot, y'all",
-	      '`8pm Workshops` \nRoom 309: "The Joy of Concurrency in Go" w/Andrew Thorp\n\nRoom 311: "How Fast Can You Add a Billion Numbers" w/Gurney Buchanan',
+	      "7pm: Dinner! Woodlands BBQ, get it while it's hot, y'all.\n7:30pm: Campus Tour w/Shandon Anderson _(ask a director for more info!)_",
+	      '`8pm Workshops` \nRoom 311: "How Fast Can You Add a Billion Numbers" w/Gurney Buchanan',
 	      '`9pm Workshops` \nRoom 309: "Guessing Your Future and the soft Skills That Will Make You Successful" w/Scott Bradley\n\nRoom 310: "Turning User Stories into Products" w/Keith Pahl, Patrick Savago (_TMetrics_)\n\nRoom 311: "How Fast Can You Add a Billion Numbers" w/Gurney Buchanan',
 	      '`10pm Workshops` \nRoom 309: "Kubernetes 101" w/Mike Wilson (_Canonical_)\n\nRoom 310: "Structured Experimentation - Practical Lessons from Winning the Zillow Prize" w/Jordan Meyer (_Rittman Mead_)',
-	      '`11pm Workshops` \nRoom 309: "Build and Deploy your First Website" w/Evan Jones'],
+	      '`11pm Workshops` \nRoom 309: "Build and Deploy your First Website" w/Evan Jones\nRoom 310: "From Monolith to Microservice: Service based Architecture with Queues" w/Adam Dixon (_PFL_)'],
 
 	     ["12am: `Not-Work-Shop` \nRoom 318: Take a break with snacks 'n DnD!\n&\n~~ Steve Jobs look-alike Contest!! ~~ ",
 	      '1am: Nothing scheduled, keep hackin',
@@ -153,7 +153,7 @@ var getFood = function() {
     var date = new Date();
     var h = date.getHours();
     var d = date.getDay();
-    if (d == 4 && h < 19) { food+='6:30pm: Dinner from Woodlands BBQ starts\n'; }
+    if (d == 5 && h < 19) { food+='6:30pm: Dinner from Woodlands BBQ starts\n'; }
     else if (h < 7) { food+='7am: Breakfast starts\n_Cereal, Bagels, Fruit, and more_\n'; }
     else { food+='11am: Lunch, sandwhiches from Jersey Mikes\n'; }
     food+="\nCan't wait? Stop by the snack table to see what's available!";
@@ -161,16 +161,17 @@ var getFood = function() {
 };
 
 var messages = {
-    '-h'      : [ '', 'Print this dialog'],
-    '-next'   : [ next(), 'List next event on the schedule'],
-    '-now'    : [ "Get going! You're missing out!\n\n"+now(),'List current events'],
-    '-food'   : [ getFood(), 'upcoming meals and snack info'],
-    '-assist' : [ '', "Include room# and the language you're using and we'll try and send someone to help you out" ],
-    '-riddle' : [ "There's something I'm hiding, it seems I forgot. find it for me, and I'll thank you a lot", '?'],    
+    '-h'      : [ '', 'Help dialog'],
+    '-n'   : [ next(), 'Next event on the schedule'],
+    '-c'    : [ "Get going! You're missing out!\n\n"+now(),'Current events'],
+    '-f'   : [ getFood(), 'Food and snack info'],
+    '-a' : [ '', "Assistance! Include room# and the language you're using and we'll try and send someone to help you out" ],
+    '-r' : [ "There's something I'm hiding, it seems I forgot. find it for me, and I'll thank you a lot", '?'],    
 
     // background commands
     'hello world' : 'omg, get on my level!',
     'hi' : 'No time for pleasantries! get hacking!!',
+    'hello' : 'sup',
     'meme' : "I'm not *that* kind of bot!",
     'good bot': 'thanks!',
     'bad bot' : "I mean, I'm doing my best",
