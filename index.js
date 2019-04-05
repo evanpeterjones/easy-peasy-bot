@@ -81,13 +81,8 @@ controller.on('rtm_close', function (bot) {
  */
 // BEGIN EDITING HERE!
 // this is our cron
-var scheduler = require('node-schedule');
-var j = schedule.scheduleJob({ start: startTime, rule: '* */45 * * * *' }, function(){
-    bot.say({
-	text : next(),
-	channel : '#general' //need to have a way to get the general channel
-    });	
-});
+
+var value_found = false;
 
 var sched = [['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am', '11am: No Event Scheduled',
 	      '12pm: No Event Scheduled',
@@ -103,7 +98,7 @@ var sched = [['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am
 	      '`10pm Workshops` \nRoom 309: "Kubernetes 101" w/Mike Wilson (_Canonical_)\n\nRoom 310: "Structured Experimentation - Practical Lessons from Winning the Zillow Prize" w/Jordan Meyer (_Rittman Mead_)',
 	      '`11pm Workshops` \nRoom 309: "Build and Deploy your First Website" w/Evan Jones'],
 
-	     ["12am not-work-Shop \nRoom 318: \nSteve Jobs look-alike Contest!! \nOr take a break with snacks 'n DnD!",
+	     ["12am: `Not-Work-Shop` \nRoom 318: Take a break with snacks 'n DnD!\n&\n~~ Steve Jobs look-alike Contest!! ~~ ",
 	      '1am: Nothing scheduled, keep hackin',
 	      '2am: Nothing scheduled, keep hackin',
 	      '3am: Nothing scheduled, keep hackin',
@@ -116,47 +111,78 @@ var sched = [['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am
 	      '10am: 2 hours to go!! keep hackin! (_Lunch by Jersey Mikes at 11am_)',
 	      '11am: Come get Lunch from Jersey Mikes!\n\n...*tick*\n...\n...*tock*\n...\n...*tick*\n...\n...*tock*\nSubmit Your Code before 12pm: _https://www.google.com_', // needs real link
 	      '12pm: All code should be submitted to devpost',
-	      '1pm: ','2pm','3pm','4pm','5pm','6pm','7pm','8pm','9pm','10pm','11pm']];
+	      '1pm: Demo Fair Begins!!','2pm','3pm','4pm','5pm','6pm','7pm','8pm','9pm','10pm','11pm']];
 
-var now = function() {
+var now = function() {    
     var date = new Date();
     var day = date.getDay();
+    var sc = '';
     var hour = date.getHours();
-    console.log(date+"\n"+day+" : "+hour);
-    var sc = sched[Number(day)-4][Number(hour)]; // change this to 5!!!! OMG
-    console.log(sc);
+    var min = date.getMinutes();
+    for (var i = 0; i < 24; i++)
+    {
+	if (i == Number(hour)){ sc+=(Number(hour)%12)+":"+min; }
+	else { sc+='-'; }
+    }
+    sc+="\n";
+    sc += sched[Number(day)-4][Number(hour)]; // change this to 5!!!! OMG
     return sc;
 };
 
 var next = function() {
-    //this doesn't work and breaks at midnight
     var date = new Date();
     var day = date.getDay();
+    var sc = '';    
     var hour = date.getHours();
-    console.log(date+"\n"+day+" : "+hour);
-    var sc = sched[Number(day)-4][Number(hour)+1]; // also change this to 5 you piece of shit!!!! // also this is broken, how the fuck?
+    var min = date.getMinutes();
+    for (var i = 0; i < 24; i++)
+    {
+	if (i == Number(hour)){ sc+=(Number(hour)%12)+":"+min; }
+	else { sc+='-'; }
+    }
+    sc+="\n";    
+    var h = (Number(hour)+1);
+    var d = Number(day)-4; //need this to be a 5
+    if (h >= 24) { h=0; d+=1; }
+    sc += sched[d][h];
+    return sc;
+};
+
+var getFood = function() {
+    var food = "`Food 'n Snacks`\n\n";
+    var date = new Date();
+    var h = date.getHours();
+    var d = date.getDay();
+    if (d == 4 && h < 19) { food+='6:30pm: Dinner from Woodlands BBQ starts\n'; }
+    else if (h < 7) { food+='7am: Breakfast starts\n_Cereal, Bagels, Fruit, and more_\n'; }
+    else { food+='11am: Lunch, sandwhiches from Jersey Mikes\n'; }
+    food+="\nCan't wait? Stop by the snack table to see what's available!";
+    return food;
 };
 
 var messages = {
-    'next'   : [ next(), 'List next event on the schedule'],
-    'now'    : ["Get going! You're missing out!\n\n"+now(),'List current events'],
-//    'food'   : ['upcoming meals and snack info', getFood()],    
-    'riddle' : ["There's something I'm hiding, it seems I forgot. find it for me, and I'll thank you a lot", '?'],
+    '-h'      : [ '', 'Print this dialog'],
+    '-next'   : [ next(), 'List next event on the schedule'],
+    '-now'    : [ "Get going! You're missing out!\n\n"+now(),'List current events'],
+    '-food'   : [ getFood(), 'upcoming meals and snack info'],
+    '-assist' : [ '', "Include room# and programming language and we'll send someone to help you out" ],
+    '-riddle' : [ "There's something I'm hiding, it seems I forgot. find it for me, and I'll thank you a lot", '?'],    
 
     // background commands
+    'hello world' : 'omg, I can do that too!',
     'hi' : 'No time for pleasantries! get hacking!!',
     'meme' : "I'm not *that* kind of bot!",
     'good bot': 'thanks!',
+    'bad bot' : "I mean, I'm doing my best",
     'stop' : "I can't be tamed",
-    'bork' : "that's not useful"
+    'bork' : "that's not useful",
+    'clue' : "I can't ruin the fun",
 };
 
 var m = Object.keys(messages);
 
-var push_cmd = 'curl -F file=@dramacat.gif -F "initial_comment=Shakes the cat" -F channels=C024BE91L,D032AC32T -H "Authorization: Bearer xoxa-xxxxxxxxx-xxxx" https://slack.com/api/files.upload';
-
-controller.hears(['help', '-h'], 'direct_message,direct_mention,mention', function(bot, message) {
-    var msg = 'Try some of these...\n\n';
+controller.hears(['-help','-h'], 'direct_message,direct_mention,mention', function(bot, message) {
+    var msg = 'You can PM or mention me with some of these...\n\n';
     for (var i = 0; i < m.length; i++)
     {
 	// Only select the messages that have intended use! (are objects)
@@ -167,22 +193,45 @@ controller.hears(['help', '-h'], 'direct_message,direct_mention,mention', functi
     bot.reply(message, msg);
 });
 
-controller.hears('01010000', 'direct_message', function(bot, message) {
+controller.hears('next-scheduled-thing', 'direct_message', function(bot, message) {
     bot.say({
-	text : "WINNER INFO:"+message,
-	channel : 'UDNTUEHUH' // send me a message when someone wins!!
+    	text : next() + '\n\n',// + motiv(), //motivational quote
+	channel : "GHP8MBZNZ" // this needs to be the general tab!
     });
 });
 
+controller.hears('assist', 'direct_message,direct_mention,mention', function(bot, message) {
+    bot.reply(message, "Sending someone your way!");
+    bot.say({
+	text : "`ASSISTANCE`\n>User: "+message.user+"\n>Message:"+message.text,
+	channel : "GHP8MBZNZ"
+    });
+});
+
+controller.hears('01010000', 'direct_message,direct_mention,mention', function(bot, message) {
+    console.log("\n\n\n\nWINNER: "+message.user);
+    if (!value_found)
+    {
+	value_found = true;
+	bot.reply(message, "That's it! I needed to get my bits in order!! Find a director and collect your prize!");
+	bot.say({	
+	    text : "WINNER INFO : "+message.user,
+	    channel : 'GHP8MBZNZ' // send me a message when someone wins!!
+	});
+    } else {
+	bot.reply(message, "That's it! Someone already solved my riddle, but thank you for the help!");
+    }
+});
+
+/*
 controller.hears('assist', 'direct_message, direct_mention', function(bot, message) {
     bot.say({
 	text : message.text,
 	channel : 'UDNTUEHUH' // send me a message when someone needs help
     });
 });
-
+*/
 controller.on('direct_message,direct_mention,mention', function (bot, message) {
-    console.log(message); // print json on server
     for (var i = 0; i < m.length; i++)
     {
 	if (message.text.toLowerCase().includes(m[i]))
@@ -196,10 +245,10 @@ controller.on('direct_message,direct_mention,mention', function (bot, message) {
 });
 
 controller.on('bot_channel_join', function (bot, message) {
-    bot.reply(message, "Thanks for the warm welcome!");
+    bot.reply(message, "hello world!");
 });
 
-	      /**
+/**
 controller.hears('test', 'direct_message', function (bot, message) {
     bot.reply(message, '`9pm Workshops` \nRoom 309: "Guessing Your Future and the soft Skills the Will Make You Successful" w/Scott Bradley\n\nRoom 310: "Turning User Stories into Products" w/Keith Pahl, Patrick Savago (TMetrics)\n\nRoom 311: "How Fast Can You Add a Billion Numbers" w/Gurney Buchanan');
 });
