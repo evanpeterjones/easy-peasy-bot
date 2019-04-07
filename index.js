@@ -92,11 +92,11 @@ var sched = [['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am
 	      '4pm: No Event Scheduled',
 	      "5pm: Visit the signin table and make sure you're registered!",
 	      '6pm: Kickoff is starting!',
-	      "7pm: Dinner! Woodlands BBQ, get it while it's hot, y'all.\n7:30pm: Campus Tour w/Shandon Anderson _(ask a director for more info!)_",
+	      "7pm: Sponsorship fair is beginning in the 3rd floor lobby!!",
 	      '`8pm Workshops` \nRoom 311: "How Fast Can You Add a Billion Numbers" w/Gurney Buchanan',
 	      '`9pm Workshops` \nRoom 309: "Guessing Your Future and the soft Skills That Will Make You Successful" w/Scott Bradley\n\nRoom 310: "Turning User Stories into Products" w/Keith Pahl, Patrick Savago (_TMetrics_)\n\nRoom 311: "How Fast Can You Add a Billion Numbers" w/Gurney Buchanan',
 	      '`10pm Workshops` \nRoom 309: "Kubernetes 101" w/Mike Wilson (_Canonical_)\n\nRoom 310: "Structured Experimentation - Practical Lessons from Winning the Zillow Prize" w/Jordan Meyer (_Rittman Mead_)',
-	      '`11pm Workshops` \nRoom 309: "Build and Deploy your First Website" w/Evan Jones\nRoom 310: "From Monolith to Microservice: Service based Architecture with Queues" w/Adam Dixon (_PFL_)'],
+	      '`11pm Workshops` \nRoom 309: "Build and Deploy your First Website" w/Evan Jones'],
 
 	     ["12am: `Not-Work-Shop` \nRoom 318: Take a break with snacks 'n DnD!\n&\n~~ Steve Jobs look-alike Contest!! ~~ ",
 	      '1am: Nothing scheduled, keep hackin',
@@ -109,7 +109,7 @@ var sched = [['12am','1am','2am','3am','4am','5am','6am','7am','8am','9am','10am
 	      '8am: Nothing scheduled \n4 hours to go! keep hackin!',
 	      '9am: 3 hours to go!! keep hackin!',
 	      '10am: 2 hours to go!! keep hackin! (_Lunch by Jersey Mikes at 11am_)',
-	      '11am: Come get Lunch from Jersey Mikes!\n\n...*tick*\n...\n...*tock*\n...\n...*tick*\n...\n...*tock*\nSubmit Your Code before 12pm: _https://www.google.com_', // needs real link
+	      '11am: Come get Lunch from Jersey Mikes!\n\n...*tick*\n...\n...*tock*\n...\n...*tick*\n...\n...*tock*\nSubmit Your Code before 12pm',
 	      '12pm: All code should be submitted to devpost',
 	      '1pm: Demo Fair Begins!!','2pm','3pm','4pm','5pm','6pm','7pm','8pm','9pm','10pm','11pm']];
 
@@ -166,7 +166,7 @@ var messages = {
     '-c'    : [ "Get going! You're missing out!\n\n"+now(),'Current events'],
     '-f'   : [ getFood(), 'Food and snack info'],
     '-a' : [ '', "Assistance! Include room# and the language you're using and we'll try and send someone to help you out" ],
-    '-r' : [ "There's something I'm hiding, it seems I forgot. find it for me, and I'll thank you a lot", '?'],    
+    '-r' : [ "There's something I'm hiding, I think, I forget. find it for me, and I'll give you a bit", '?'],    
 
     // background commands
     'hello world' : 'omg, get on my level!',
@@ -194,10 +194,23 @@ controller.hears(['-help','-h'], 'direct_message,direct_mention,mention', functi
     bot.reply(message, msg);
 });
 
-controller.hears('next-scheduled-thing', 'direct_message', function(bot, message) {
+controller.hears(['help'], 'direct_message', function(bot, message) {
+    var msg = 'You can PM or mention me with some of these...\n\n';
+    for (var i = 0; i < m.length; i++)
+    {
+	// Only select the messages that have intended use! (are objects)
+	if (typeof messages[m[i]] === 'object') {
+	    msg += '`'+m[i]+'`\t'+messages[m[i]][1];
+	} msg+='\n';
+    }
+    bot.reply(message, msg);
+});
+
+
+controller.hears('n-s-t', 'direct_message', function(bot, message) {
     bot.say({
     	text : next() + '\n\n',// + motiv(), //motivational quote
-	channel : "GHP8MBZNZ" // this needs to be the general tab!
+	channel : "CDPCC4475" // this needs to be the general tab!
     });
 });
 
@@ -205,7 +218,7 @@ controller.hears('assist', 'direct_message,direct_mention,mention', function(bot
     bot.reply(message, "Sending someone your way!");
     bot.say({
 	text : "`ASSISTANCE`\n>User: "+message.user+"\n>Message:"+message.text,
-	channel : "GHP8MBZNZ"
+	channel : "CDPCC4475"
     });
 });
 
